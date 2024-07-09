@@ -1,3 +1,5 @@
+-- ## Identifying Duplicate Rows  ##
+
 -- Finding Exact Duplicates Records based on name, address, city,  zipcode and email
 SELECT name, address, city,  zipcode, email, count(*) as num_duplicates 
 FROM ch01_r02_customers
