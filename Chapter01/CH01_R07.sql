@@ -22,7 +22,7 @@ order by column1, table1;
 
 
 
--- Find all customer_id relationships across tables
+-- Find all customer_id values that that exist across these 3 tables
 WITH customer_ids AS (
 	SELECT DISTINCT customer_id FROM (
 	SELECT customer_id FROM ch01_r07_customers

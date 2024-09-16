@@ -15,7 +15,7 @@ Outliers AS (
         (age - (SELECT mean_value FROM Stats)) / (SELECT stddev_value FROM Stats) AS z_score
     FROM ch01_r05_customers
 )
--- Step 3: Finally, we select the records where the absolute z-score is greater than 3, identifying them as outliers.
+-- Step 3: Finally, we select the records where the absolute z-score is greater than 2, identifying them as outliers.
 SELECT 
     id, name, age,  ROUND(mean_value,2) mean, ROUND(stddev_value,2) std_dev, ROUND(z_score) z_score
 FROM Outliers cross join Stats
