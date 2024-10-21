@@ -1,12 +1,12 @@
 -- ## Addressing Missing Data in Joins ##
 
 -- Step 1: Detect Missing Assignments in Both Directions
-    -- Detect projects without employees assigned
-    SELECT p.project_id AS id, p.project_name AS name, p.status AS status, NULL AS employee_department
-    FROM ch02_r03_projects p
-    LEFT JOIN ch02_r03_project_assignments pa 
+-- Detect projects without employees assigned
+SELECT p.project_id AS id, p.project_name AS name, p.status AS status, NULL AS employee_department
+FROM ch02_r03_projects p
+LEFT JOIN ch02_r03_project_assignments pa 
       ON p.project_id = pa.project_id
-    WHERE pa.employee_id IS NULL;
+WHERE pa.employee_id IS NULL;
 
 -- Detect employees not assigned to any active projects
 SELECT e.employee_id, e.employee_name, e.department
@@ -47,7 +47,7 @@ WHERE NOT EXISTS (
     JOIN ch02_r03_projects p ON pa.project_id = p.project_id
     WHERE pa.employee_id = e.employee_id
       AND p.status = 'active' 
-) and e.employee_id <> 999
+) and e.employee_id <> 999;
 	
 --Step 4: Assign the “Unassigned Employee” to projects with no employees assigned
 -- Assign the "Unassigned Employee" to projects that have no employees assigned
@@ -58,3 +58,22 @@ LEFT JOIN ch02_r03_project_assignments pa
   ON p.project_id = pa.project_id
 WHERE pa.employee_id IS NULL and p.project_id<>999;
 
+
+
+-- There is more
+
+--Cascading Data Issues
+-- Detect billing records for employees no longer assigned to active projects
+SELECT b.employee_id, b.project_id, b.hours_billed
+FROM ch02_r03_billing b
+LEFT JOIN ch02_r03_project_assignments pa ON b.employee_id = pa.employee_id AND b.project_id = pa.project_id
+LEFT JOIN ch02_r03_projects p ON pa.project_id = p.project_id
+WHERE pa.project_id IS NULL OR p.status != 'active';
+
+-- Cyclic Dependencies in Project Relationships:
+-- Detect missing dependencies in project relationships
+SELECT p1.project_id, p1.project_name, p2.project_name AS dependent_project
+FROM ch02_r03_projects p1
+JOIN ch02_r03_project_dependencies pd ON p1.project_id = pd.project_id
+LEFT JOIN ch02_r03_projects p2 ON pd.dependent_project_id = p2.project_id
+WHERE p2.project_id IS NULL;

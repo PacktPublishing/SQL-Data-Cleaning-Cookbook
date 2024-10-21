@@ -109,3 +109,38 @@ INSERT INTO ch02_r03_project_assignments (employee_id, project_id, assigned_date
 (27, 105, '2024-10-27'),
 (28, 109, '2024-10-28'),
 (29, 110, '2024-10-29');
+
+
+-- Create project_dependencies table
+CREATE TABLE ch02_r03_project_dependencies (
+    project_id INT,
+    dependent_project_id INT,
+    FOREIGN KEY (project_id) REFERENCES ch02_r03_projects(project_id),
+    FOREIGN KEY (dependent_project_id) REFERENCES ch02_r03_projects(project_id)
+);
+
+-- Create billing table
+CREATE TABLE ch02_r03_billing (
+    billing_id INT PRIMARY KEY,
+    employee_id INT,
+    project_id INT,
+    hours_billed DECIMAL(5, 2),
+    billing_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES ch02_r03_employees(employee_id),
+    FOREIGN KEY (project_id) REFERENCES ch02_r03_projects(project_id)
+);
+
+-- Insert example data for project_dependencies
+INSERT INTO ch02_r03_project_dependencies (project_id, dependent_project_id) VALUES
+(101, 103),  -- Project Alpha depends on Project Gamma
+(102, 105),  -- Project Beta depends on Project Epsilon
+(104, 101),  -- Project Delta depends on Project Alpha
+(105, NULL);  -- Project Epsilon depends on Invalid Project ID
+
+-- Insert example data for billing table
+INSERT INTO ch02_r03_billing (billing_id, employee_id, project_id, hours_billed, billing_date) VALUES
+(1, 1, 101, 40.5, '2024-10-15'),  -- Billing for Alice on Project Alpha
+(2, 2, 102, 20.0, '2024-09-20'),  -- Billing for Bob on Project Beta
+(3, 3, 105, 15.0, '2024-10-10'),  -- Billing for Eve on Project Epsilon
+(4, 2, 999, 5.0, '2024-10-22');   -- Billing for Bob on Unassigned Work (incorrect billing scenario)
+
